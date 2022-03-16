@@ -351,13 +351,18 @@ class Edge:
                                       df['loss_sum'] / df['nb_loss_trades'])
 
         # Win rate = number of profitable trades / number of trades
-        df['winrate'] = df['nb_win_trades'] / df['nb_trades']
+        if(df['nb_win_trades'] > 0):
+            df['winrate'] = df['nb_win_trades'] / df['nb_trades']
+
+            # required_risk_reward = (1 / winrate) - 1
+            df['required_risk_reward'] = (1 / df['winrate']) - 1
+
+        else:
+            df['winrate'] = 0
+            df['required_risk_reward'] = 0
 
         # risk_reward_ratio = average win / average loss
         df['risk_reward_ratio'] = df['average_win'] / df['average_loss']
-
-        # required_risk_reward = (1 / winrate) - 1
-        df['required_risk_reward'] = (1 / df['winrate']) - 1
 
         # expectancy = (risk_reward_ratio * winrate) - (lossrate)
         df['expectancy'] = (df['risk_reward_ratio'] * df['winrate']) - (1 - df['winrate'])
